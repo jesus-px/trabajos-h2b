@@ -25,6 +25,19 @@ function bindUI(){
   document.getElementById("clearFiltersTop").addEventListener("click",clearFilters);
   document.getElementById("prevPage").addEventListener("click",()=>{if(currentPage>1){currentPage--;render();}});
   document.getElementById("nextPage").addEventListener("click",()=>{const total=Math.ceil(filteredJobs.length/perPage)||1;if(currentPage<total){currentPage++;render();}});
+
+  document.getElementById("jobList").addEventListener("click",e=>{
+    const btn=e.target.closest(".details-btn");
+    if(!btn)return;
+    const card=btn.closest(".job-card");
+    const details=card?.querySelector(".job-details");
+    if(!details)return;
+    const isOpen=card.classList.toggle("details-open");
+    details.hidden=!isOpen;
+    btn.textContent=isOpen?"Ocultar detalles":"Ver detalles";
+    btn.setAttribute("aria-expanded",String(isOpen));
+  });
+
   const mobileBtn=document.getElementById("mobileFilterBtn"), panel=document.getElementById("filtersPanel"), overlay=document.getElementById("overlay");
   mobileBtn.addEventListener("click",()=>{panel.classList.add("open");overlay.classList.add("show");});
   overlay.addEventListener("click",()=>{panel.classList.remove("open");overlay.classList.remove("show");});
@@ -81,10 +94,81 @@ function jobCard(job){
   const cat=getCategoryInfo(job.categoria);
   const statusClass=job.activa?"active-pill":"active-pill inactive-pill";
   const applyUrl=cleanUrl(job.urlAplicacion||job.sitioWeb);
-  return `<article class="job-card"><div class="job-main"><div class="job-icon">${cat.icon}</div><div><div class="job-title">${escapeHtml(job.posicion||"Sin título")}</div><div class="company">${escapeHtml(job.empresa||"Empresa no indicada")}</div><div class="location">📍 ${escapeHtml(job.ciudad)}, ${escapeHtml(job.estadoCompleto||job.estado)} (${escapeHtml(job.estado)})</div><span class="badge ${job.categoria}">${cat.name}</span></div></div><div><div class="money">💵 ${formatSalary(job)}</div><div class="date-row">📅 ${escapeHtml(job.fechaInicio||"Sin fecha")}</div><div class="date-row">📅 ${escapeHtml(job.fechaFin||"Sin fecha")}</div></div><div><span class="${statusClass}">${job.activa?"Activa":"Inactiva"}</span><div class="contact-row">📞 ${escapeHtml(job.telefono||"No disponible")}</div><div class="contact-row">✉️ ${escapeHtml(job.email||"No disponible")}</div>${applyUrl?`<a class="details-btn" target="_blank" href="${applyUrl}">Aplicar / Ver detalles</a>`:`<span class="details-btn">Sin enlace</span>`}</div></article>`;
+  const email=cleanEmail(job.email);
+  const mailto=email ? buildMailto(email, job.posicion) : "";
+  const detailsId=`details-${escapeAttr(job.uid||job.id||job.posicion)}`;
+  const descripcion=job.descripcion || "Descripción no disponible.";
+
+  return `
+    <article class="job-card">
+      <div class="job-main">
+        <div class="job-icon">${cat.icon}</div>
+        <div>
+          <div class="job-title">${escapeHtml(job.posicion||"Sin título")}</div>
+          <div class="company">${escapeHtml(job.empresa||"Empresa no indicada")}</div>
+          <div class="location">📍 ${escapeHtml(job.ciudad||"Ciudad no indicada")}, ${escapeHtml(job.estadoCompleto||job.estado||"Estado no indicado")} ${job.estado?`(${escapeHtml(job.estado)})`:""}</div>
+          <span class="badge ${escapeAttr(job.categoria)}">${escapeHtml(cat.name)}</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="money">💵 ${escapeHtml(formatSalary(job))}</div>
+        <div class="date-row">📅 Inicio: ${escapeHtml(job.fechaInicio||"Sin fecha")}</div>
+        <div class="date-row">📅 Fin: ${escapeHtml(job.fechaFin||"Sin fecha")}</div>
+      </div>
+
+      <div>
+        <span class="${statusClass}">${job.activa?"Activa":"Inactiva"}</span>
+        <div class="contact-row">📞 ${escapeHtml(job.telefono||"No disponible")}</div>
+        <div class="contact-row">✉️ ${escapeHtml(email||"No disponible")}</div>
+        <button class="details-btn" type="button" aria-expanded="false" aria-controls="${detailsId}">Ver detalles</button>
+      </div>
+
+      <div class="job-details" id="${detailsId}" hidden>
+        <div class="details-grid">
+          <div class="details-section details-description">
+            <h3>Detalles de la vacante</h3>
+            <p>${escapeHtml(descripcion)}</p>
+          </div>
+          <div class="details-section">
+            <h3>Información</h3>
+            <p><strong>Empresa:</strong> ${escapeHtml(job.empresa||"No indicada")}</p>
+            <p><strong>Posición:</strong> ${escapeHtml(job.posicion||"No indicada")}</p>
+            <p><strong>Categoría:</strong> ${escapeHtml(cat.name)}</p>
+            <p><strong>Fuente:</strong> ${escapeHtml(job.fuente||"No indicada")}</p>
+          </div>
+          <div class="details-section">
+            <h3>Aplicación</h3>
+            <p><strong>Correo:</strong> ${escapeHtml(email||"No disponible")}</p>
+            <p><strong>Web:</strong> ${applyUrl?"Disponible":"No disponible"}</p>
+            <p><strong>Actualización:</strong> ${escapeHtml(job.ultimaActualizacion||"No indicada")}</p>
+          </div>
+        </div>
+
+        <div class="apply-actions">
+          ${applyUrl?`<a class="apply-btn apply-web" href="${escapeAttr(applyUrl)}" target="_blank" rel="noopener">Aplicar web</a>`:`<span class="apply-btn disabled">Aplicar web no disponible</span>`}
+          ${mailto?`<a class="apply-btn apply-email" href="${escapeAttr(mailto)}">Aplicar por correo</a>`:`<span class="apply-btn disabled">Aplicar por correo no disponible</span>`}
+        </div>
+      </div>
+    </article>`;
 }
 
-function cleanUrl(url){ if(!url || url==="N/A")return ""; return url.startsWith("http")?url:"https://"+url; }
+function cleanUrl(url){
+  const value=String(url||"").trim();
+  if(!value || value.toUpperCase()==="N/A")return "";
+  return value.startsWith("http")?value:"https://"+value;
+}
+
+function cleanEmail(email){
+  const value=String(email||"").trim();
+  if(!value || value.toUpperCase()==="N/A" || !value.includes("@"))return "";
+  return value;
+}
+
+function buildMailto(email, position){
+  const subject=encodeURIComponent(`Application for ${position||"Job Position"}`);
+  return `mailto:${email}?subject=${subject}`;
+}
 
 function clearFilters(){
   state.q="";state.category="";state.estado="";state.salary=0;state.activeOnly=true;state.sort="recent";currentPage=1;
@@ -98,3 +182,4 @@ function clearFilters(){
   applyFilters();
 }
 function escapeHtml(text){return String(text||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
+function escapeAttr(text){return escapeHtml(text).replace(/\s+/g,"-");}
