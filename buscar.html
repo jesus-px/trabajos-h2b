@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0d1f3c">
+  <title>Buscar Trabajos H2B</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/search.css">
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html" class="brand"><span class="brand-icon">💼</span><span><strong>H2B</strong><small>Jobs Explorer</small></span></a>
+  <nav class="nav">
+    <a href="index.html">Inicio</a>
+    <a class="active" href="buscar.html">Buscar Trabajos</a>
+    <a href="index.html#sobre">Sobre H-2B</a>
+  </nav>
+  <button class="mobile-filter-btn" id="mobileFilterBtn">Filtros</button>
+</header>
+
+<main class="layout">
+  <aside class="filters" id="filtersPanel">
+    <div class="filters-head"><h2>Filtros</h2><button id="clearFiltersTop">↻ Limpiar</button></div>
+    <section class="filter-box"><h3>💼 Categoría</h3><div id="categoryFilters" class="check-list"></div></section>
+    <section class="filter-box"><h3>📍 Estado</h3><select id="stateFilter"><option value="">Todos los estados</option></select></section>
+    <section class="filter-box"><h3>💵 Salario mínimo</h3><input type="range" id="salaryFilter" min="0" max="50" value="0" step="1"><div class="range-row"><span>$0</span><strong id="salaryLabel">$0/hr</strong><span>$50+</span></div></section>
+    <section class="filter-box switch-row"><span>Buscar solo activas</span><label class="switch"><input type="checkbox" id="activeOnly" checked><span></span></label></section>
+    <button class="clear-btn" id="clearFilters">Limpiar filtros</button>
+  </aside>
+
+  <section class="results">
+    <div class="results-head">
+      <div><h1>Buscar Trabajos H-2B</h1><p><strong id="resultCount">0</strong> vacantes encontradas</p></div>
+      <div class="search-actions">
+        <div class="search-input"><span>🔍</span><input type="search" id="searchInput" placeholder="Buscar por posición, empresa, ciudad o keyword..."></div>
+        <select id="sortFilter"><option value="recent">Más recientes</option><option value="salary_desc">Mayor salario</option><option value="salary_asc">Menor salario</option><option value="start_asc">Fecha inicio cercana</option></select>
+      </div>
+    </div>
+    <div id="jobList" class="job-list"><div class="loading">Cargando vacantes...</div></div>
+    <div class="pagination"><button id="prevPage">← Anterior</button><span id="pageInfo">Página 1</span><button id="nextPage">Siguiente →</button></div>
+  </section>
+</main>
+<div class="overlay" id="overlay"></div>
+<script src="js/data.js"></script>
+<script src="js/search.js"></script>
+</body>
+</html>

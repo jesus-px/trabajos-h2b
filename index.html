@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0d1f3c">
+  <title>H2B Jobs Explorer</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/home.css">
+</head>
+<body>
+
+<header class="site-header">
+  <a href="index.html" class="brand">
+    <span class="brand-icon">💼</span>
+    <span><strong>H2B</strong><small>Jobs Explorer</small></span>
+  </a>
+  <nav class="nav">
+    <a class="active" href="index.html">Inicio</a>
+    <a href="buscar.html">Buscar Trabajos</a>
+    <a href="#sobre">Sobre H-2B</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-copy">
+        <span class="eyebrow">Trabajos temporales en EE.UU.</span>
+        <h1>Encuentra trabajos H-2B en Estados Unidos</h1>
+        <p>Explora oportunidades laborales temporales en diferentes industrias y estados. Tu próxima experiencia en USA puede empezar aquí.</p>
+        <div class="hero-actions">
+          <a class="btn-primary" href="buscar.html">🔍 Buscar trabajos <span>→</span></a>
+          <a class="btn-secondary" href="#categorias">Ver categorías</a>
+        </div>
+        <p class="trust-line">✅ Información actualizada desde fuentes laborales oficiales.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-card">
+    <div class="stat"><span class="stat-icon blue">💼</span><div><strong id="statActivas">—</strong><span>Vacantes activas</span></div></div>
+    <div class="stat"><span class="stat-icon green">📅</span><div><strong id="statRecientes">—</strong><span>Nuevas recientes</span></div></div>
+    <div class="stat"><span class="stat-icon purple">🏢</span><div><strong id="statEmpresas">—</strong><span>Empleadores</span></div></div>
+    <div class="stat"><span class="stat-icon amber">📍</span><div><strong id="statEstados">—</strong><span>Estados</span></div></div>
+  </section>
+
+  <section class="section" id="categorias">
+    <div class="section-head"><h2>Categorías principales</h2><a href="buscar.html">Ver todas →</a></div>
+    <div class="category-grid" id="categoryGrid">
+      <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+      <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+    </div>
+  </section>
+
+  <section class="benefits">
+    <div class="benefit"><span>🛡️</span><div><h3>Trabajos legales</h3><p>Vacantes organizadas desde fuentes laborales para visa H-2B.</p></div></div>
+    <div class="benefit"><span>📨</span><div><h3>Contacto directo</h3><p>Accede al email, teléfono o enlace de aplicación cuando esté disponible.</p></div></div>
+    <div class="benefit"><span>🔄</span><div><h3>Actualizado frecuentemente</h3><p>Nuevas oportunidades se integran a la base de datos de forma continua.</p></div></div>
+  </section>
+
+  <section class="section info" id="sobre">
+    <h2>¿Qué es H-2B?</h2>
+    <p>H-2B es una categoría de trabajos temporales no agrícolas en Estados Unidos. Esta herramienta organiza vacantes por categoría, estado, salario y contacto para facilitar tu búsqueda.</p>
+  </section>
+</main>
+
+<footer><p>H2B Jobs Explorer · Proyecto personal de búsqueda laboral</p></footer>
+
+<script src="js/data.js"></script>
+<script src="js/home.js"></script>
+</body>
+</html>
