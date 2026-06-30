@@ -132,7 +132,11 @@ function initFilters(){
     if(j.estado)stateSet.set(j.estado,j.estadoCompleto||j.estado);
   });
 
-  const cats=Object.entries(catCounts).sort((a,b)=>b[1]-a[1]);
+  const cats=Object.entries(catCounts).sort((a,b)=>{
+    if(a[0]==="otros")return 1;
+    if(b[0]==="otros")return -1;
+    return b[1]-a[1];
+  });
 
   document.getElementById("categoryFilters").innerHTML =
     `<label class="check-item">
