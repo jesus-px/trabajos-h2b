@@ -15,7 +15,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const counts = {};
     active.forEach(j => counts[j.categoria] = (counts[j.categoria] || 0) + 1);
-    const top = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    const top = Object.entries(counts).sort((a,b)=>{
+      if(a[0]==="otros")return 1;
+      if(b[0]==="otros")return -1;
+      return b[1]-a[1];
+    }).slice(0,6);
 
     document.getElementById("categoryGrid").innerHTML = top.map(([cat,count]) => {
       const info = getCategoryInfo(cat);
