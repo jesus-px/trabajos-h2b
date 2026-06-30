@@ -177,11 +177,8 @@ function applyFilters(){
     if(state.estado && job.estado!==state.estado)return false;
 
     if(state.recentOnly){
-      if(!job.ultimaActualizacion)return false;
-
-      const d = new Date(job.ultimaActualizacion.replace(" ","T"));
-
-      if(isNaN(d) || (Date.now()-d.getTime())/86400000 > 3)
+      const dias=daysSince(job.ultimaActualizacion);
+      if(dias===null || dias>3)
         return false;
     }
 
@@ -216,12 +213,6 @@ function sortJobs(){
     if(state.sort==="start_asc")return parseDate(a.fechaInicio)-parseDate(b.fechaInicio);
     return parseDate(b.ultimaActualizacion)-parseDate(a.ultimaActualizacion);
   });
-}
-
-function parseDate(value){
-  if(!value)return 0;
-  const d=new Date(String(value).replace(" ","T"));
-  return isNaN(d)?0:d.getTime();
 }
 
 function render(){
