@@ -28,11 +28,16 @@ function parseCSV(text){
 
 function salaryNumber(value){ return parseFloat(String(value||"").replace(/[^0-9.]/g,"")) || 0; }
 
+function normalizeCategory(value){
+  const cat=String(value||"").trim().toLowerCase();
+  return CATEGORY_LABELS[cat] ? cat : "otros";
+}
+
 function normalizeJob(j){
   return {
     uid:j["UID"]||"", id:j["ID"]||"", empresa:j["Empresa"]||"", ciudad:j["Ciudad"]||"",
     estado:j["Estado"]||"", estadoCompleto:j["EstadoCompleto"]||"", posicion:j["Posición"]||"",
-    categoria:(j["Categoria"]||"otros").toLowerCase(), salarioDesdeTexto:j["Salario Desde"]||"",
+    categoria:normalizeCategory(j["Categoria"]), salarioDesdeTexto:j["Salario Desde"]||"",
     salarioHastaTexto:j["Salario Hasta"]||"", salarioDesde:salaryNumber(j["Salario Desde"]),
     salarioHasta:salaryNumber(j["Salario Hasta"]), fechaInicio:j["Fecha Inicio"]||"", fechaFin:j["Fecha Fin"]||"",
     activa:String(j["Activa"]).toUpperCase()==="TRUE", telefono:j["Teléfono"]||"", email:j["Email"]||"",
@@ -50,4 +55,28 @@ function getCategoryInfo(cat){ return CATEGORY_LABELS[cat] || CATEGORY_LABELS.ot
 function formatSalary(job){
   if(job.salarioDesdeTexto && job.salarioHastaTexto) return `${job.salarioDesdeTexto} - ${job.salarioHastaTexto}`;
   return job.salarioDesdeTexto || job.salarioHastaTexto || "No indicado";
+}
+
+// Parseo de fechas robusto: soporta DD/MM/YYYY, DD-MM-YYYY e ISO (YYYY-MM-DD), con hora opcional.
+// Devuelve timestamp en ms, o 0 si la fecha es invalida/vacia.
+function parseDate(value){
+  if(!value)return 0;
+  const raw=String(value).trim();
+
+  const dmy=raw.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
+  if(dmy){
+    const [,d,m,y,h="0",min="0",s="0"]=dmy;
+    const date=new Date(Number(y),Number(m)-1,Number(d),Number(h),Number(min),Number(s));
+    return isNaN(date)?0:date.getTime();
+  }
+
+  const d=new Date(raw.replace(" ","T"));
+  return isNaN(d)?0:d.getTime();
+}
+
+// Dias transcurridos desde una fecha hasta ahora. Devuelve null si la fecha es invalida.
+function daysSince(value){
+  const t=parseDate(value);
+  if(!t)return null;
+  return (Date.now()-t)/86400000;
 }
